@@ -4,8 +4,8 @@ Deletion-resilient hypermedia pagination
 """
 
 import csv
-import math
-from typing import List, Dict
+import math  # noqa: F401
+from typing import Dict, List, Any
 
 
 class Server:
@@ -41,46 +41,45 @@ class Server:
 
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
         """
-        Get hypermedia pagination information for a specific index.
+        Returns a deletion-resilient page of the dataset.
 
         Args:
-            index (int): The start index of the return page (None for 0)
-            page_size (int): The number of items per page
+            index (int): Starting index. Defaults to 0.
+            page_size (int): Number of items per page. Defaults to 10.
 
         Returns:
-            Dict: Dictionary containing pagination metadata and data
+            Dict[str, Any]: page data including index,
+            next_index, page_size and data
         """
+
         # Set default index to 0 if None
         if index is None:
             index = 0
 
-        # Assert that index is in valid range
-        indexed_dataset = self.indexed_dataset()
-        assert 0 <= index < len(indexed_dataset), "Index out of range"
+        # Get indexed dataset
+        dataset = self.indexed_dataset()
+        dataset_size = len(dataset)
 
-        # Get the data for the current page
-        data = []
-        current_index = index
+        # Assert index is in valid range
+        assert isinstance(index, int) and 0 <= index < dataset_size
+
+        data: List[List[Any]] = []
         next_index = index
 
-        # Collect data for the current page
-        for i in range(page_size):
-            # Find the next available index
-            while (current_index < len(indexed_dataset) and
-                   current_index not in indexed_dataset):
-                current_index += 1
+        # Move forward until valid data is found if index is deleted
+        while dataset.get(next_index) is None:
+            next_index += 1
 
-            if current_index < len(indexed_dataset):
-                data.append(indexed_dataset[current_index])
-                next_index = current_index + 1
-                current_index += 1
-            else:
-                break
+        # Add valid items until reaching page_size
+        while len(data) < page_size:
+            item = dataset.get(next_index)
+            if item is not None:
+                data.append(item)
+            next_index += 1
 
-        # Return the hypermedia dictionary
         return {
             'index': index,
-            'data': data,
-            'page_size': len(data),
-            'next_index': next_index
+            'next_index': next_index,
+            'page_size': page_size,
+            'data': data
         }
