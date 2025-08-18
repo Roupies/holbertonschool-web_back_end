@@ -46,27 +46,30 @@ class Server:
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
         """
         Get a specific page of the dataset.
-        
+
         Args:
             page (int): The page number (starting from 1)
             page_size (int): The number of items per page
-            
+
         Returns:
-            List[List]: The requested page of data or empty list if out of range
+            List[List]: The requested page of data or empty list if out of
+            range
         """
         # Assert that both arguments are integers greater than 0
-        assert isinstance(page, int) and page > 0, "page must be an integer greater than 0"
-        assert isinstance(page_size, int) and page_size > 0, "page_size must be an integer greater than 0"
-        
+        assert isinstance(page, int) and page > 0, \
+            "page must be an integer greater than 0"
+        assert isinstance(page_size, int) and page_size > 0, \
+            "page_size must be an integer greater than 0"
+
         # Get the dataset
         dataset = self.dataset()
-        
+
         # Use index_range to find the correct indexes
         start_index, end_index = index_range(page, page_size)
-        
+
         # Check if the requested page is out of range
         if start_index >= len(dataset):
             return []
-        
+
         # Return the appropriate page of the dataset
         return dataset[start_index:end_index]
