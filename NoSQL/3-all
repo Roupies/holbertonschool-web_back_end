@@ -1,4 +1,3 @@
 // Write a script that lists all documents in the collection school:
 
-use my_db
-db.posts.find()
+db.school.find()
