@@ -1,4 +1,4 @@
-// Write a script that adds a new attribute to a document in the collection school:
+t // Write a script that adds a new attribute to a document in the collection school:
 
 db.school.updateOne({
     name: "Holberton school"},
