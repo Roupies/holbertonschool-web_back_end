@@ -1,12 +1,5 @@
 // Write a script that inserts a document in the collection school
 
-db.createCollection("school")
-
 db.school.insertOne({
   name: "Holberton school",
-  body: "Body of post.",
-  category: "News",
-  likes: 1,
-  tags: ["news", "events"],
-  date: Date()
 })
