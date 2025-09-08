@@ -1,0 +1,13 @@
+// Write a script that inserts a document in the collection school
+
+use my_db
+db.createCollection("school")
+
+db.posts.insertOne({
+  name: "Holberton school",
+  body: "Body of post.",
+  category: "News",
+  likes: 1,
+  tags: ["news", "events"],
+  date: Date()
+})
